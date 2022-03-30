@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="-272.5" y="583.5">BarcodeIO</node>
+    <node x="584.0" y="344.5">BarcodeImage</node>
+    <node x="240.5" y="-11.5">DataMatrix</node>
+    <node x="-10.0" y="275.0">Assign4</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="DataMatrix" target="BarcodeIO" relationship="REALIZATION">
+      <point x="0.0" y="331.5" />
+      <point x="380.0" y="707.5" />
+      <point x="-133.0" y="707.5" />
+      <point x="0.0" y="-96.5" />
+    </edge>
+  </edges>
+  <settings layout="Orthogonal Groups" zoom="1.0" showDependencies="false" x="423.0" y="524.0" />
+  <SelectedNodes>
+    <node>BarcodeImage</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>Project Files</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
