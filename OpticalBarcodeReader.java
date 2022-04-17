@@ -1,11 +1,33 @@
-/* Deniz Erisgen
- * Assignment-4 (Barcode)
- * IDE:IntelliJ
- */
+/**
+ * @author Deniz Erisgen ©
+ **/
 
 import java.util.BitSet;
 
-class Assign4 {
+interface BarcodeIO {
+   // Accepts a BarcodeImage object and stores a copy of this image.
+   // Stored image might be an exact or a refined clone of the parameter
+   // No translation. Text string is not touched, updated or defined
+   boolean scan(BarcodeImage bc);
+
+   // Accepts a text string to be eventually encoded in an image.
+   // No translation, BarcodeImage is not touched, updated or defined
+   boolean readText(String text);
+
+   // Produces image using internal stored text in the implementing class
+   boolean generateImageFromText();
+
+   // Produces text using internal stored image in the implementing class
+   boolean translateImageToText();
+
+   // prints out the text string to the console.
+   void displayTextToConsole();
+
+   // prints out the image to the console.
+   void displayImageToConsole();
+}
+
+class OpticalBarcodeReader {
    public static void main(String[] args) {
       String[] sImageIn =
             {
@@ -80,13 +102,13 @@ class BarcodeImage implements Cloneable {
 
    public BarcodeImage() {
       // default init value for bool is already false
-      imageData = new boolean[MAX_HEIGHT][MAX_WIDTH];
+      imageData = new boolean[BarcodeImage.MAX_HEIGHT][BarcodeImage.MAX_WIDTH];
    }
 
    // Converts 1D array of Strings to the internal 2D array of booleans.
    public BarcodeImage(String[] strData) {
-      if (checkSize(strData)) imageData = new boolean[MAX_HEIGHT][MAX_WIDTH];
-      int lines = MAX_HEIGHT - 1; // marker for actual bottom row
+      if (checkSize(strData)) imageData = new boolean[BarcodeImage.MAX_HEIGHT][BarcodeImage.MAX_WIDTH];
+      int lines = BarcodeImage.MAX_HEIGHT - 1; // marker for actual bottom row
       for (int i = strData.length - 1; i >= 0; i--) {
          // skipping blank lines
          while (strData[i].isBlank()) {
@@ -104,13 +126,13 @@ class BarcodeImage implements Cloneable {
 
    // Accessor and mutator for each bit in the image:
    public boolean getPixel(int row, int col) {
-      if (imageData != null && row <= MAX_HEIGHT && col <= MAX_WIDTH) {
+      if (imageData != null && row <= BarcodeImage.MAX_HEIGHT && col <= BarcodeImage.MAX_WIDTH) {
          return imageData[row][col];
       } else return false;
    }
 
    public boolean setPixel(int row, int col, boolean value) {
-      if (imageData != null && row <= MAX_HEIGHT && col <= MAX_WIDTH) {
+      if (imageData != null && row <= BarcodeImage.MAX_HEIGHT && col <= BarcodeImage.MAX_WIDTH) {
          imageData[row][col] = value;
          return true;
       } else return false;
@@ -119,7 +141,7 @@ class BarcodeImage implements Cloneable {
    // Checking incoming data if bigger or null
    private boolean checkSize(String[] data) {
       if (data == null || data.length == 0) return false;
-      return (data.length <= MAX_HEIGHT && data[0].length() <= MAX_WIDTH);
+      return (data.length <= BarcodeImage.MAX_HEIGHT && data[0].length() <= BarcodeImage.MAX_WIDTH);
    }
 
    // barcode debug print
@@ -133,8 +155,8 @@ class BarcodeImage implements Cloneable {
    public BarcodeImage clone() {
       try {
          BarcodeImage clone = (BarcodeImage) super.clone();
-         clone.imageData = new boolean[MAX_HEIGHT][MAX_WIDTH];
-         for (int i = 0; i < MAX_HEIGHT; i++) {
+         clone.imageData = new boolean[BarcodeImage.MAX_HEIGHT][BarcodeImage.MAX_WIDTH];
+         for (int i = 0; i < BarcodeImage.MAX_HEIGHT; i++) {
             System.arraycopy(imageData[i], 0, clone.imageData[i],
                   0, imageData[i].length);
          }
@@ -155,7 +177,7 @@ class DataMatrix implements BarcodeIO {
 
    // constructs an empty image and text. actualWidth and actualHeight is 0
    public DataMatrix() {
-      this.image = new BarcodeImage();
+      image = new BarcodeImage();
       actualHeight = actualWidth = 0;
       text = "";
    }
@@ -238,7 +260,7 @@ class DataMatrix implements BarcodeIO {
       image = tempImage;
    }
 
-   // checks text and inits a new image
+   // checks text and initializes a new image
    public boolean readText(String text) {
       if (text != null && text.length() + 2 < BarcodeImage.MAX_WIDTH) {
          this.text = text;
@@ -283,9 +305,9 @@ class DataMatrix implements BarcodeIO {
    private void displayRawImage() {
       for (int i = 0; i < BarcodeImage.MAX_HEIGHT; i++) {
          for (int j = 0; j < BarcodeImage.MAX_WIDTH; j++) {
-            System.out.print((image.getPixel(i, j) ? BLACK_CHAR : WHITE_CHAR));
+            System.out.print((image.getPixel(i, j) ? DataMatrix.BLACK_CHAR : DataMatrix.WHITE_CHAR));
          }
-         System.out.println("");
+         System.out.print('\n');
       }
    }
 
@@ -343,90 +365,10 @@ class DataMatrix implements BarcodeIO {
            i < BarcodeImage.MAX_HEIGHT; i++) {
          System.out.print(post);
          for (int j = 0; j < actualWidth; j++) {
-            System.out.print(image.getPixel(i, j) ? BLACK_CHAR : WHITE_CHAR);
+            System.out.print(image.getPixel(i, j) ? DataMatrix.BLACK_CHAR : DataMatrix.WHITE_CHAR);
          }
          System.out.print(post + '\n');
       }
       System.out.println(bar.repeat(barLength));
    }
 }
-
-interface BarcodeIO {
-   // Accepts a BarcodeImage object and stores a copy of this image.
-   // Stored image might be an exact or a refined clone of the parameter
-   // No translation. Text string is not touched, updated or defined
-   public boolean scan(BarcodeImage bc);
-
-   // Accepts a text string to be eventually encoded in an image.
-   // No translation, BarcodeImage is not touched, updated or defined
-   public boolean readText(String text);
-
-   // Produces image using internal stored text in the implementing class
-   public boolean generateImageFromText();
-
-   // Produces text using internal stored image in the implementing class
-   public boolean translateImageToText();
-
-   // prints out the text string to the console.
-   public void displayTextToConsole();
-
-   // prints out the image to the console.
-   public void displayImageToConsole();
-}
-
-/* Output:
--------------------------------------------
-|* * * * * * * * * * * * * * * * * * * * *|
-|*                                       *|
-|****** **** ****** ******* ** *** *****  |
-|*     *    ******************************|
-|* **    * *        **  *    * * *   *    |
-|*   *    *  *****    *   * *   *  **  ***|
-|*  **     * *** **   **  *    **  ***  * |
-|***  * **   **  *   ****    *  *  ** * **|
-|*****  ***  *  * *   ** ** **  *   * *   |
-|*****************************************|
--------------------------------------------
-CSUMB CSIT online program is top notch.
-----------------------------------------
-|* * * * * * * * * * * * * * * * * * * |
-|*                                    *|
-|**** *** **   ***** ****   *********  |
-|* ************ ************ **********|
-|** *      *    *  * * *         * *   |
-|***   *  *           * **    *      **|
-|* ** * *  *   * * * **  *   ***   *** |
-|* *           **    *****  *   **   **|
-|****  *  * *  * **  ** *   ** *  * *  |
-|**************************************|
-----------------------------------------
-You did it!  Great work.  Celebrate.
-----------------------------------------
-|* * * * * * * * * * * * * * * * * * * |
-|*                                    *|
-|***** * ***** ****** ******* **** **  |
-|* ************************************|
-|**  *    *  * * **    *    * *  *  *  |
-|* *               *    **     **  *  *|
-|**  *   * * *  * ***  * ***  *        |
-|**      **    * *    *     *    *  * *|
-|** *  * * **   *****  **  *    ** *** |
-|**************************************|
-----------------------------------------
-What a great resume builder this is!
------------------------------------
-|* * * * * * * * * * * * * * * * *|
-|*                               *|
-|***** *** ** ******* **********  |
-|* *******************************|
-|**  * * *       *     **      *  |
-|* **       *  * ***     * ** *  *|
-|**    *    *  *   **     ******  |
-|*   * * *  *    * **  ** **  *  *|
-|*  ** *** *  *** * * ***** **  * |
-|*********************************|
------------------------------------
-This was an amazing assignment!
-
-Process finished with exit code 0
-*/
