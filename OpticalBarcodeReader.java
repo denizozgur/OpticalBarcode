@@ -5,13 +5,20 @@
 import java.util.BitSet;
 
 interface BarcodeIO {
-   // Accepts a BarcodeImage object and stores a copy of this image.
-   // Stored image might be an exact or a refined clone of the parameter
-   // No translation. Text string is not touched, updated or defined
+   /**
+    * Accepts a BarcodeImage object and stores a copy of this image.
+    * Stored image might be an exact or a refined clone of the parameter
+    * No translation. Text string is not touched, updated or defined
+    */
+
    boolean scan(BarcodeImage bc);
 
-   // Accepts a text string to be eventually encoded in an image.
-   // No translation, BarcodeImage is not touched, updated or defined
+   /**
+    *  Accepts a text string to be eventually encoded in an image
+    *  No translation, BarcodeImage is not touched, updated or defined
+    * @param text
+    * @return
+    */
    boolean readText(String text);
 
    // Produces image using internal stored text in the implementing class
